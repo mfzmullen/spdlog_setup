@@ -6,7 +6,7 @@
 
 #pragma once
 
-#ifndef FMT_HEADER_ONLY
+#if !defined(SPDLOG_COMPILED_LIB) && !defined(FMT_HEADER_ONLY)
 #define FMT_HEADER_ONLY
 #endif
 
@@ -536,8 +536,11 @@ auto find_value_from_map(
 
 template <class Fn, class ErrFn>
 auto add_msg_on_err(Fn &&fn, ErrFn &&add_msg_on_err_fn) ->
+    #if __cplusplus >= 201703L
+    typename std::invoke_result_t<Fn()> {
+    #else
     typename std::result_of<Fn()>::type {
-
+    #endif
     // std
     using std::exception;
     using std::move;
